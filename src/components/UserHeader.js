@@ -11,7 +11,7 @@ class UserHeader extends React.Component {
         }
 
         return (
-            <div className="header">{user.name}</div>
+            <div className="header mb-1">{user.name}</div>
         );
     }
 }

@@ -4,6 +4,8 @@ import _ from 'lodash';
 export const fetchPostsAndUsers = id => async (dispatch, getState) => {
     await dispatch(fetchPosts());
     await dispatch(loveCounterArr());
+    await dispatch(showCommentBoxFunc());
+    await dispatch(showCommentsFunc());
     
     const userIDs = _.uniq(_.map(getState().posts, 'userId'));
     userIDs.forEach(id => dispatch(fetchUser(id)));
@@ -22,7 +24,6 @@ export const fetchUser = id => async dispatch => {
 };
 
 export const loveCounterArr = (index) => (dispatch, getState) => {
-    console.log(getState().loveCountArr);
     var newArr = [];
     if(getState().loveCountArr.length === 0) {
         newArr = getState().posts.map(post => {
@@ -36,6 +37,50 @@ export const loveCounterArr = (index) => (dispatch, getState) => {
     
     dispatch({ type: 'LOVE_COUNT_ARR', payload: newArr });
 };
+
+export const showCommentBoxFunc = (index) => (dispatch, getState) => {
+    
+    var newArr = [];
+    if(getState().showCommentBoxArr.length === 0) {
+        newArr = getState().posts.map(post => {
+            return 'd-none';
+        });
+    } else {
+        newArr = getState().showCommentBoxArr.map(el => {
+            return el;
+        });
+        newArr.forEach((el, ind) => {
+            if(ind === index) {
+                if(el === 'd-none') {
+                    newArr[ind] = 'd-block mt-1';
+                } else {
+                    newArr[ind] = 'd-none';
+                }
+            } else {
+                newArr[ind] = 'd-none';
+            }
+        });
+    }
+   
+    dispatch({ type: 'SHOW_COMMENT_BOX', payload: newArr });
+}
+
+export const showCommentsFunc = (index, comment) => (dispatch, getState) => {
+
+    var newArr = [];
+    
+    if(getState().showCommentsArr.length === 0) {
+        getState().posts.forEach(() => {
+            newArr = [...newArr, []];
+        });
+    } else {
+        newArr = getState().showCommentsArr.map((el, ind) => {
+            return (ind === index) ? [...el, comment] : el;
+        });
+    }
+    
+    dispatch({ type: 'SHOW_COMMENTS', payload: newArr });
+}
 
  
 // memoize version
